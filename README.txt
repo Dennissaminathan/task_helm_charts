@@ -56,7 +56,8 @@ Test the deployment:
 	Run command kubectl get ingress or minikube kubectl -- get ingress , Get the host name of the ingress (currently configurd as webapplication) and the IP of the ingress.
 	update the name and ip in /etc/hosts file. (Something like this :172.168.10.3 webapplication)
 
-	After the successful host file updation , App can be accessed using curl:/webapplication/data (data is the contect for the data retrival)
+	After the successful host file updation , App can be accessed using 
+	curl webapplication/data (data is the contect for the data retrival)
 
 	the string "Hello world" would be shown.
 
