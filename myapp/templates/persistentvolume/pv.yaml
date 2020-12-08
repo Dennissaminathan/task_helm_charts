@@ -1,0 +1,19 @@
+{{- if .Values.mysql.persistencevolume.enabled }}
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ .Values.mysql.persistencevolume.pvname }}
+  labels:
+    {{- include "myapp.labels" . | nindent 4 }}
+spec:
+  capacity:
+    storage: {{ .Values.mysql.persistencevolume.size }}
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/mnt/data"    
+  storageClassName: local-storage
+  claimRef:
+    name: {{ .Values.mysql.persistenceclaim.pvcname }}
+    namespace: {{ .Values.mysql.namespace }}
+{{- end }}

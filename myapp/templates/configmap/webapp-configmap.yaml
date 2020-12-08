@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.webapp.name }}
+  namespace: {{ .Values.webapp.namespace }} 
+  labels:
+    release: "{{ .Release.Name }}"
+data:
+  db_host: {{ .Values.mysql.name }}

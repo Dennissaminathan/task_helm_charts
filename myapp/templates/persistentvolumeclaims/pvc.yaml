@@ -1,0 +1,16 @@
+{{- if .Values.mysql.persistencevolume.enabled }}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ .Values.mysql.persistenceclaim.pvcname | quote }}
+  namespace: {{ .Values.mysql.namespace }}
+  labels:
+    {{- include "myapp.labels" . | nindent 4 }}
+spec:
+  storageClassName: {{ .Values.mysql.persistenceclaim.className  }}
+  accessModes:
+    - {{ .Values.mysql.persistenceclaim.accessMode | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.mysql.persistenceclaim.size | quote }}
+{{- end }}

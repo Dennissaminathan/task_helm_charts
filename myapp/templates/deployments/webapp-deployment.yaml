@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.webapp.name }}
+  namespace: {{ .Values.webapp.namespace }} 
+  labels:
+    {{- include "myapp.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.webapp.autoscaling.enabled }}
+  replicas: {{ .Values.webapp.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "myapp.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.webapp.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "myapp.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.webapp.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      securityContext:
+        {{- toYaml .Values.webapp.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Values.webapp.name }}
+          env:
+          - name: MYSQL_ROOT_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.mysql.name }}
+                key: db_secret_key
+          - name: MYSQL_USER
+            valueFrom:
+              secretKeyRef:
+                name:  {{ .Values.mysql.name }}
+                key: db_secret_user
+          - name: MYSQL_SERVICE_NAME
+            valueFrom:
+              configMapKeyRef:
+                name: {{ .Values.webapp.name }}
+                key: db_host      
+          securityContext:
+            {{- toYaml .Values.webapp.securityContext | nindent 12 }}
+          image: "{{ .Values.webapp.image.repository }}:{{ .Values.webapp.image.tag }}"
+          imagePullPolicy: {{ .Values.webapp.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 3306
+              protocol: TCP
