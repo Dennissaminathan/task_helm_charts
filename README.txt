@@ -1,6 +1,6 @@
 # task_helm_charts
 
-Environment details:
+#Environment details:
 
 	Operating system used : Ubuntu 18.04.5 LTS
 	minikube version: v1.15.1
